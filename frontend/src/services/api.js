@@ -62,7 +62,7 @@ export const searchAPI = {
 // Bookings API
 // ============================================================
 export const bookingsAPI = {
-  createBooking: (data) => api.post('/bookings', data),
+  createBooking: (data) => api.post('/bookings/', data),
   getUserBookings: (userId) => api.get(`/bookings/user/${userId}`),
   cancelBooking: (bookingId) => api.delete(`/bookings/${bookingId}`),
 };
