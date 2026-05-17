@@ -1,0 +1,132 @@
+.trainer-card {
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.trainer-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+  border-color: rgba(255, 107, 43, 0.2);
+}
+
+.trainer-card--featured {
+  border-color: rgba(255, 107, 43, 0.3);
+  box-shadow: 0 4px 16px rgba(255, 107, 43, 0.12);
+}
+
+.trainer-card--featured::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), #ff8c5a);
+}
+
+.trainer-card__featured-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  color: var(--color-primary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 107, 43, 0.2);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.trainer-card__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trainer-card__avatar {
+  flex-shrink: 0;
+}
+
+.trainer-card__header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.trainer-card__name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trainer-card__spec {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 20px;
+  border: 1px solid;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  width: fit-content;
+}
+
+.trainer-card__bio {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.trainer-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.trainer-card__rate {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.trainer-card__rate-amount {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.trainer-card__rate-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.trainer-card__btn {
+  flex-shrink: 0;
+}
+
+.star-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-left: 4px;
+}

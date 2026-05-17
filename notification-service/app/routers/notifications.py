@@ -10,7 +10,7 @@ from pydantic import BaseModel
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-# In-memory notification store: user_id -> list of notification records
+# In-memory notification store: key (email or user_id) -> list of notification records
 _notification_history: Dict[str, List[dict]] = defaultdict(list)
 
 LOG_FILE = os.getenv("LOG_FILE", "notifications.log")
@@ -26,6 +26,7 @@ class NotificationRequest(BaseModel):
     price: Optional[float] = None
     booking_id: str
     notification_type: str
+    user_id: Optional[str] = None
 
 
 class BookingConfirmedRequest(BaseModel):
@@ -37,6 +38,7 @@ class BookingConfirmedRequest(BaseModel):
     duration: int
     price: Optional[float] = None
     booking_id: str
+    user_id: Optional[str] = None
 
 
 class BookingCancelledRequest(BaseModel):
@@ -47,6 +49,7 @@ class BookingCancelledRequest(BaseModel):
     time: str
     duration: int
     booking_id: str
+    user_id: Optional[str] = None
 
 
 def _price_str(price: Optional[float]) -> str:
@@ -152,7 +155,7 @@ def _persist_to_file(formatted: str):
         logger.warning(f"Could not write to log file '{LOG_FILE}': {e}")
 
 
-def _store_in_memory(user_identifier: str, notification_type: str, data: dict):
+def _store_in_memory(key: str, notification_type: str, data: dict):
     record = {
         "notification_type": notification_type,
         "booking_id": data["booking_id"],
@@ -165,15 +168,21 @@ def _store_in_memory(user_identifier: str, notification_type: str, data: dict):
         "price": data.get("price"),
         "sent_at": datetime.utcnow().isoformat(),
     }
-    _notification_history[user_identifier].append(record)
+    _notification_history[key].append(record)
 
 
 def _dispatch(notification_type: str, data: dict):
     formatted = _format_notification(notification_type, data)
     logger.info(formatted)
     _persist_to_file(formatted)
+
+    # Always index by email so the history endpoint works with either identifier.
     _store_in_memory(data["to_email"], notification_type, data)
-    _store_in_memory(data.get("user_id", data["to_email"]), notification_type, data)
+
+    # Also index by explicit user_id when provided (avoids duplicate if same as email).
+    user_id = data.get("user_id")
+    if user_id and user_id != data["to_email"]:
+        _store_in_memory(user_id, notification_type, data)
 
 
 @router.get("/health")
@@ -187,7 +196,7 @@ async def send_notification(request: NotificationRequest):
     if request.notification_type not in valid_types:
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid notification_type. Must be one of: {', '.join(valid_types)}"
+            detail=f"Invalid notification_type. Must be one of: {', '.join(sorted(valid_types))}"
         )
 
     data = request.model_dump()
