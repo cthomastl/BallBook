@@ -1,0 +1,12 @@
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.env
+*.log
+
+# Go binaries
+pricing-service/pricing-service
+
+# Build artifacts
+frontend/build/
